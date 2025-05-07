@@ -1,20 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import Dashboard from './pages/Dashboard';
+import SignIn    from './pages/SignIn';
+import SignUp    from './pages/SignUp';
 
 function App() {
+  const { user, signOut } = useAuth();
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-4">
-      <h1 className="text-4xl font-bold mb-4">AI Fitness Planner</h1>
-      <p className="text-lg mb-6 text-gray-300 text-center max-w-md">
-        Your AI-powered personal trainer and running planner. Plan smarter workouts tailored to you.
-      </p>
-      <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg shadow transition">
-        Get Started
-      </button>
-    </div>
+    <BrowserRouter>
+      <nav className="p-4 bg-gray-800 text-white flex gap-4">
+        {user ? (
+          <>
+            <Link to="/dashboard">Dashboard</Link>
+            <button onClick={signOut}>Sign Out</button>
+          </>
+        ) : (
+          <>
+            <Link to="/signin">Sign In</Link>
+            <Link to="/signup">Sign Up</Link>
+          </>
+        )}
+      </nav>
+
+      <Routes>
+        <Route
+          path="/dashboard"
+          element={user ? <Dashboard /> : <Navigate to="/signin" replace />}
+        />
+        <Route
+          path="/signin"
+          element={!user ? <SignIn /> : <Navigate to="/dashboard" replace />}
+        />
+        <Route
+          path="/signup"
+          element={!user ? <SignUp /> : <Navigate to="/dashboard" replace />}
+        />
+        <Route
+          path="*"
+          element={<Navigate to={user ? '/dashboard' : '/signin'} replace />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App
+export default App;
