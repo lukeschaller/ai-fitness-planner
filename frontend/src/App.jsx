@@ -1,9 +1,10 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import Dashboard from './pages/Dashboard';
-import SignIn    from './pages/SignIn';
-import SignUp    from './pages/SignUp';
+import LandingPage from './pages/LandingPage';
+import Dashboard   from './pages/Dashboard';
+import SignIn      from './pages/SignIn';
+import SignUp      from './pages/SignUp';
 
 function App() {
   const { user, signOut } = useAuth();
@@ -13,11 +14,13 @@ function App() {
       <nav className="p-4 bg-gray-800 text-white flex gap-4">
         {user ? (
           <>
+            <Link to="/">Home</Link>
             <Link to="/dashboard">Dashboard</Link>
             <button onClick={signOut}>Sign Out</button>
           </>
         ) : (
           <>
+            <Link to="/">Home</Link>
             <Link to="/signin">Sign In</Link>
             <Link to="/signup">Sign Up</Link>
           </>
@@ -25,10 +28,16 @@ function App() {
       </nav>
 
       <Routes>
+        {/* Public landing page */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Protected dashboard */}
         <Route
           path="/dashboard"
           element={user ? <Dashboard /> : <Navigate to="/signin" replace />}
         />
+
+        {/* Auth routes */}
         <Route
           path="/signin"
           element={!user ? <SignIn /> : <Navigate to="/dashboard" replace />}
@@ -37,9 +46,11 @@ function App() {
           path="/signup"
           element={!user ? <SignUp /> : <Navigate to="/dashboard" replace />}
         />
+
+        {/* Fallback: send to home if no match */}
         <Route
           path="*"
-          element={<Navigate to={user ? '/dashboard' : '/signin'} replace />}
+          element={<Navigate to="/" replace />}
         />
       </Routes>
     </BrowserRouter>
