@@ -72,7 +72,7 @@ export default function SignUp() {
     if (profileError) {
       setErrorMsg(profileError.message);
     } else {
-      navigate('/dashboard');
+      navigate('/choosefocus');
     }
 
     setLoading(false);

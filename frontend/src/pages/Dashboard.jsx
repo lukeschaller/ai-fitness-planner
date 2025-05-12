@@ -5,6 +5,7 @@ import supabase           from '../supabaseClient';
 export default function Dashboard() {
   const { user } = useAuth();
   const [firstName, setFirstName] = useState('');
+  const [modality,  setModality]  = useState('');
   const [loading,   setLoading]   = useState(true);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function Dashboard() {
       // fetch only the first_name column
       const { data, error } = await supabase
         .from('profiles')
-        .select('first_name')
+        .select('first_name, modality')
         // if your PK column is `id`:
         .eq('user_id', user.id)
         .single();
@@ -24,6 +25,7 @@ export default function Dashboard() {
         console.error('Error loading profile:', error.message);
       } else {
         setFirstName(data.first_name);
+        setModality(data.modality);
       }
       setLoading(false);
     };
@@ -39,9 +41,7 @@ export default function Dashboard() {
         {/* Header */}
         <header className="flex items-center justify-between mb-2">
           <div className="text-xl font-bold">Logo</div>
-          <div className="text-3xl font-extrabold">
-            {loading ? 'Loading…' : `Welcome, ${firstName}!`}
-          </div>
+          <div className="text-3xl font-extrabold">{loading ? 'Loading…' : `Welcome, ${firstName}!`}</div>
           <button className="bg-white text-gray-800 px-4 py-2 rounded-lg">
             Settings
           </button>
@@ -49,7 +49,7 @@ export default function Dashboard() {
 
         {/* Focus Plan Title */}
         <div className="text-center mb-6">
-          <div className="text-2xl font-bold">{'{focus}'} Plan</div>
+          <div className="text-2xl font-bold">{loading ? 'Loading…' : `${modality} Plan`}</div>
         </div>
 
         <hr className="border-gray-700 mb-6" />

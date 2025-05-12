@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage';
 import Dashboard   from './pages/Dashboard';
 import SignIn      from './pages/SignIn';
 import SignUp      from './pages/SignUp';
+import ChooseFocus  from './pages/ChooseFocus';
 
 function App() {
   const { user, signOut } = useAuth();
@@ -16,6 +17,7 @@ function App() {
           <>
             <Link to="/">Home</Link>
             <Link to="/dashboard">Dashboard</Link>
+            <Link to="/choosefocus">Choose Focus</Link>
             <button onClick={signOut}>Sign Out</button>
           </>
         ) : (
@@ -45,6 +47,12 @@ function App() {
         <Route
           path="/signup"
           element={!user ? <SignUp /> : <Navigate to="/dashboard" replace />}
+        />
+
+        {/* Choose focus page */}
+        <Route
+          path="/choosefocus"
+          element={user ? <ChooseFocus /> : <Navigate to="/" replace />}
         />
 
         {/* Fallback: send to home if no match */}
